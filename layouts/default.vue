@@ -1,44 +1,70 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app>
-      <v-list>
-        <v-list-tile class="pt-4">
-          <org-state-selector></org-state-selector>
-        </v-list-tile>
-        <v-list-tile v-for="(item, i) in items" :key="i" :to="item.to" router exact>
-          <v-list-tile-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"/>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-toolbar :clipped-left="clipped" fixed app>
-      <v-toolbar-side-icon @click="drawer = !drawer"/>
-      <v-toolbar-title>Meraki Switch Swapper</v-toolbar-title>
-    </v-toolbar>
-    <v-content>
-      <v-container>
-        <nuxt/>
-      </v-container>
-    </v-content>
+  <div>
+    <v-app>
+      <v-app-bar dense dark>
+        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-spacer></v-spacer>
+        <v-toolbar-title>Meraki Location Services</v-toolbar-title>
 
-    <v-footer :fixed="fixed" app>
-      <span>
-        Cisco Meraki &copy; 2019 -
-        <a href="https://create.meraki.io">Meraki.io</a>
-      </span>
-    </v-footer>
-  </v-app>
+        <v-spacer></v-spacer>
+
+        <v-menu left bottom >
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+
+          <!-- <v-list>
+            <v-list-item>
+              <v-text-field label="MQTT Websocket Address" v-model="mqttAddress" />
+            </v-list-item>
+            <v-list-item>
+              <v-text-field label="MQTT Topic" v-model="mqttTopic" />
+            </v-list-item>
+          </v-list> -->
+        </v-menu>
+      </v-app-bar>
+
+      <v-navigation-drawer v-model="drawer" app temporary width="700px">
+        <v-list>
+          <v-list-item class="pt-4">
+            <org-state-selector />
+          </v-list-item>
+          <v-list-item class="pt-4" >
+            <net-state-selector />
+          </v-list-item>
+          <v-list-item>
+             <mqtt-selector @close="wsDialog = false"  />
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+
+      <v-content>
+       
+          <nuxt />
+       
+      </v-content>
+
+      <v-footer :fixed="fixed" app>
+        <span>
+          Cisco Meraki &copy; 2020 -
+          <a href="https://create.meraki.io">Meraki.io</a>
+        </span>
+      </v-footer>
+    </v-app>
+  </div>
 </template>
 
 <script>
 import OrgStateSelector from "~/components/OrgStateSelector";
+import NetStateSelector from "~/components/NetStateSelector";
+import MqttSelector from "~/components/MqttSelector";
 export default {
   components: {
-    OrgStateSelector
+    OrgStateSelector,
+    NetStateSelector,
+    MqttSelector
   },
   data() {
     return {
@@ -48,7 +74,7 @@ export default {
       items: [
         {
           icon: "home",
-          title: "Switch Swapper",
+          title: "MQTT Dashboard",
           to: "/"
         },
         {
@@ -60,8 +86,11 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: "Meraki Switch Swapper"
+      title: "Meraki Real-time Location Services"
     };
+  },
+  mounted(){
+    this.$vuetify.theme.dark = true
   }
 };
 </script>

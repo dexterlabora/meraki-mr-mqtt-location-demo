@@ -1,5 +1,5 @@
 {
-  "name": "Meraki Swapper",
+  "name": "Meraki Location Services MQTT Demo",
   "version": 2,
   "builds": [
     {

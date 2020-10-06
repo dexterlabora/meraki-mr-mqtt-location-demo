@@ -1,32 +1,22 @@
 <template id="org-selector">
-  <div>
-    <v-layout>
-      <v-flex class="md-8">
-        <v-select
-          v-bind:items="orgs"
-          item-text="name"
-          item-value="id"
-          return-object
-          v-model="form.org"
-          label="Organizations"
-          mask
-          autofocus
-        ></v-select>
-      </v-flex>
-      <v-flex class="md-4">
-        <span>
-          <v-btn round icon @click="fetchOrgs">
-            <v-icon>autorenew</v-icon>
-          </v-btn>
-        </span>
-      </v-flex>
-    </v-layout>
-  </div>
+  <v-select
+    :items="orgs"
+    item-text="name"
+    item-value="id"
+    return-object
+    v-model="form.org"
+    label="Organizations"
+    mask
+    autofocus
+    icon-color="green"
+    @click:append-outer="fetchOrgs"
+    append-outer-icon="autorenew"
+  ></v-select>
 </template>
 
 <script>
 import Vue from "vue";
-import meraki from "~/plugins/meraki";
+//import meraki from "~/plugins/meraki";
 
 export default Vue.extend({
   template: "#org-state-selector",
@@ -35,37 +25,49 @@ export default Vue.extend({
       form: {
         org: {
           id: "",
-          name: ""
-        }
+          name: "",
+        },
       },
-      orgs: []
+      orgs: [],
     };
   },
   computed: {
-    org: function() {
+    org: function () {
       return this.$store.state.org;
-    }
+    },
   },
   created() {
     this.fetchOrgs();
   },
   methods: {
-    fetchOrgs: function() {
+    fetchOrgs: function () {
       this.orgs = [];
       this.form.org = {
         id: "",
-        name: ""
+        name: "",
       };
-      meraki.OrganizationsController.getOrganizations().then(res => {
-        console.log("getOrganizations res", res);
+      this.$axios.get(`/api/organizations`).then((res) => {
+        console.log("getOrganizations res", res.data);
         // order and save orgs
-        this.orgs = res.sort(function(a, b) {
+        let sortedOrgs = res.data.sort(function (a, b) {
           if (a.name < b.name) return -1;
           if (a.name > b.name) return 1;
           return 0;
         });
+        this.$set(this, "orgs", sortedOrgs);
       });
-    }
+
+      // meraki.OrganizationsController.getOrganizations().then(res => {
+      //   console.log("getOrganizations res", res);
+      //   // order and save orgs
+      //   let sortedOrgs = res.sort(function(a, b) {
+      //     if (a.name < b.name) return -1;
+      //     if (a.name > b.name) return 1;
+      //     return 0;
+      //   });
+      //   this.$set(this,'orgs',sortedOrgs)
+      // });
+    },
   },
   watch: {
     /*
@@ -89,7 +91,7 @@ export default Vue.extend({
       console.log("setting org, ", this.form.org);
       this.$store.commit("setOrg", this.form.org);
       this.$emit("onChange", { org: this.form.org });
-    }
-  }
+    },
+  },
 });
 </script>

@@ -1,25 +1,27 @@
 <template>
-  <v-layout column justify-center align-center>
+  <v-layout column justify-center align-cente >
     <v-flex xs12 sm8 md6>
       <div class="text-xs-center">
         <!--img src="~assets/img/swap.png" alt="Nuxt.js Logo" max-height="60px" class="logo" /-->
-        <swapper-logo></swapper-logo>
+        <!-- <swapper-logo></swapper-logo> -->
       </div>
 
-      <swap-form></swap-form>
+      <mqtt-dashboard/>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-import SwapperLogo from "~/components/SwapperLogo.vue";
+//import SwapperLogo from "~/components/SwapperLogo.vue";
+import MqttDashboard from "~/components/MqttDashboard.vue";
 
-import SwapForm from "~/components/SwapForm.vue";
+//import SwapForm from "~/components/SwapForm.vue";
 
 export default {
   components: {
-    SwapperLogo,
-    SwapForm
+    // SwapperLogo,
+    // SwapForm
+    MqttDashboard
   }
 };
 </script>

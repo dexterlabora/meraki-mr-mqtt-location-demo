@@ -7,7 +7,7 @@ module.exports = {
    */
   head: {
     titleTemplate: "%s",
-    title: "Meraki Swapper",
+    title: "Meraki Wireless MQTT Dashboard",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -16,7 +16,7 @@ module.exports = {
         name: "description",
         content:
           process.env.npm_package_description ||
-          "A Cisco Meraki tool for replicating devices"
+          "A Cisco Meraki tool for demonstrating the MR MQTT and BLE features"
       }
     ],
     link: [
@@ -29,9 +29,9 @@ module.exports = {
     ]
   },
   manifest: {
-    name: "Meraki Swapper",
-    short_name: "Meraki Swapper",
-    description: "A Cisco Meraki tool to clone and remove devices.",
+    name: "Meraki Wireless MQTT Dashboard",
+    short_name: "Meraki Wireless MQTT Dashboard",
+    description: "A Cisco Meraki tool for demonstrating the MR MQTT and BLE features",
     theme_color: "#fff",
     start_url: "/"
   },
@@ -50,7 +50,8 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  //plugins: [],
+  plugins: [{ src: "~/plugins/google-maps", ssr: true }],
   /*
    ** Nuxt.js modules
    */

@@ -1,58 +1,28 @@
-  <template id="networks-selector">
-  <div>
+  <template id="network-selector">
+ 
     <v-select
       :items="networks"
-      v-model="networksSelected"
+      v-model="networkSelected"
       label="Networks"
       item-text="name"
       :menu-props="{ maxHeight: '400' }"
       return-object
-      small-chips
-      multiple
-      clearable
       autofocus
     >
-      <template v-slot:prepend-item>
-        <v-list-tile ripple @click="toggle">
-          <v-list-tile-action>
-            <v-icon>done_all</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Select All</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-divider class="mt-2"></v-divider>
-      </template>
-      <template slot="selection" slot-scope="{ item, index }">
-        <v-chip small v-if="index === 0">
-          <span class="small-chips">{{ item.name }}</span>
-        </v-chip>
-        <span
-          v-if="index === 1"
-          class="grey--text caption"
-        >(+{{ organizationsSelected.length - 1 }} others)</span>
-      </template>
-      <template slot="selection" slot-scope="{ item, index }">
-        <v-chip small v-if="index === 0">
-          <span class="small-chips">{{ item.name }}</span>
-        </v-chip>
-        <span
-          v-if="index === 1"
-          class="grey--text caption"
-        >(+{{ networksSelected.length - 1 }} others)</span>
-      </template>
+      
     </v-select>
-  </div>
+
 </template>
 
 <script>
 import Vue from "vue";
+//import meraki from "~/plugins/meraki";
 export default Vue.extend({
   template: "#networks-selector",
   props: ["label", "description"],
   data() {
     return {
-      networksSelected: [],
+      networkSelected: [],
       networks: []
     };
   },
@@ -66,33 +36,44 @@ export default Vue.extend({
   },
   methods: {
     fetchNetworks() {
-      if (!this.org) {
+       if (!this.org) {
         return;
       }
-      this.$merakiSdk.NetworksController.getOrganizationNetworks({
-        organizationId: this.org.id
-      }).then(res => {
-        this.networks = res;
-        this.networksSelected = []; // set default
-      });
+      if (!this.org.id) {
+        return;
+      }
+      this.$axios
+        .get(`/api/organizations/${this.org.id}/networks`)
+        .then((res) => {
+          console.log("fetchNetworks res", res.data);
+        // order and save orgs
+        let sortedNets = res.data.sort(function(a, b) {
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
+          return 0;
+        });
+        this.$set(this,'networks',sortedNets)
+         this.networkSelected = this.networks[0]; // set default
+        });
+
+      
+
+      // meraki.NetworksController.getOrganizationNetworks({
+      //   organizationId: this.org.id
+      // }).then(res => {
+      //   this.networks = res;
+      //   this.networkSelected = this.networks[0]; // set default
+      // });
     },
-    toggle() {
-      this.$nextTick(() => {
-        if (this.networksSelected.length === this.networks.length) {
-          this.networksSelected = [];
-        } else {
-          this.networksSelected = this.networks.slice();
-        }
-      });
-    }
   },
   watch: {
-    networksSelected() {
+    networkSelected() {
       //this.$store.commit("setDevices", this.devicesSelected); // set state
-      this.$emit("onChange", { networks: this.networksSelected });
+      this.$emit("onChange", { networks: this.networkSelected });
+      this.$store.commit("setNet", this.networkSelected );
     },
     org: function() {
-      this.networksSelected = [];
+      this.networkSelected = {};
       this.fetchNetworks();
     }
   }

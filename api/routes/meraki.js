@@ -38,7 +38,7 @@ router.use("/", jsonParser, function(req, res, next) {
     headers: {
       "X-Cisco-Meraki-API-Key": apiKey,
       "Content-Type": "application/json",
-      "User-Agent": "meraki-swapper"
+      "User-Agent": "meraki-location-demo"
     }
   };
   console.log("meraki.js requestMeraki options", options);
