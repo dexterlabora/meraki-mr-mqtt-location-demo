@@ -31,6 +31,7 @@
     "lateration": "^0.1.3",
     "lodash": "^4.17.11",
     "mathjs": "^7.0.0",
+    "mqtt": "^4.2.1",
     "net": "^1.0.2",
     "nuxt": "^2.8.1",
     "request": "^2.88.0",
@@ -38,7 +39,6 @@
     "trilat": "^1.0.0",
     "vue-apexcharts": "^1.5.3",
     "vue-cc-quaggajs": "^2.2.2",
-
     "vue-quaggajs": "^1.0.10",
     "vue-select": "^3.10.3",
     "vue2-google-maps": "^0.10.7",
